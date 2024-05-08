@@ -1,0 +1,59 @@
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+    networks:
+      - app-network
+    ports:
+      - "3000:3000"
+
+  db:
+    container_name: postgres
+    image: postgres:16-alpine
+    restart: on-failure
+    ports:
+      - 5432:5432
+    command: postgres
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+      start_period: 60s
+
+  minio:
+    container_name: minio
+    image: minio/minio
+    restart: on-failure
+    command: minio server /data
+    ports:
+      - 9000:9000
+      - 9001:9001
+    volumes:
+      - ./minio_data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+      start_period: 60s
+
+networks:
+  app-network:
+    driver: bridge

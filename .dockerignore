@@ -1,0 +1,24 @@
+
+
+# ignore docs
+*.md
+
+# ignore lint config
+.eslintrc.json
+
+# ignore run config
+*.Dockerfile
+docker-compose.*.yml
+Makefile
+
+# Ignore deps config
+node_modules/
+bun.lockb
+
+# ignore git config
+.git/
+.gitignore
+
+# Ignore postgres and minio data directories
+postgres_data/
+minio_data/

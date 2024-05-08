@@ -9,13 +9,20 @@
     "lint": "next lint",
     "prisma:generate": "dotenv -e src/ext/.env.development -- bunx prisma generate --schema=./src/db/schema.prisma",
     "prisma:migrate": "dotenv -e src/ext/.env.development -- bunx prisma migrate dev --schema=./src/db/schema.prisma",
+    "prisma:reset": "dotenv -e src/ext/.env.development -- bunx prisma migrate reset --schema=./src/db/schema.prisma",
     "prettier": "bunx prettier --write ."
   },
   "dependencies": {
+    "@lucia-auth/adapter-prisma": "^4.0.1",
+    "@mantine/core": "^7.9.1",
+    "@mantine/form": "^7.9.1",
     "@prisma/client": "^5.13.0",
+    "lucia": "^3.2.0",
     "next": "14.0.1",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "zod": "^3.23.7",
+    "zod-form-data": "^2.0.2"
   },
   "devDependencies": {
     "@types/node": "^20",

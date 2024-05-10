@@ -5,6 +5,7 @@ WORKDIR /app
 COPY . .
 
 RUN bun install --no-cache
+RUN bun run prisma:generate
 RUN bun run build
 
 

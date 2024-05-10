@@ -1,11 +1,30 @@
 import { Lucia } from "lucia";
 import { PrismaAdapter } from "@lucia-auth/adapter-prisma";
 import { PrismaClient } from "@prisma/client";
+import { loadEnvFile } from "process";
 
-const client = new PrismaClient();
+// load .env.local file and .env.production/.env.development file
+loadEnvFile(`${process.cwd()}/src/ext/.env.local`);
+loadEnvFile(`${process.cwd()}/src/ext/.env.${process.env.NODE_ENV}`)
+
+
+
+const prismaClientSingleton = () => {
+  return new PrismaClient()
+}
+
+declare const globalThis: {
+  prismaGlobal: ReturnType<typeof prismaClientSingleton>;
+} & typeof global;
+
+const client = globalThis.prismaGlobal ?? prismaClientSingleton()
+
+
+if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = client
+
 
 const adapter = new PrismaAdapter(client.session, client.user);
-export const lucia = new Lucia(adapter, {
+const lucia = new Lucia(adapter, {
   sessionCookie: {
     // this sets cookies with super long expiration
     // since Next.js doesn't allow Lucia to extend cookie expiration when rendering pages
@@ -33,3 +52,6 @@ declare module "lucia" {
 interface DatabaseUserAttributes {
   username: string;
 }
+
+
+export { client as prismaClient, adapter, lucia };

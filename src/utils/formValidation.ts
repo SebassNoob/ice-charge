@@ -1,19 +1,69 @@
-import { z, type ZodTypeAny } from "zod";
+import { z, type ZodType } from "zod";
+import { type Prettify } from "./prettifyType";
 
-export interface FormValidtionResult {
-  isValid: boolean;
-  parsedData?: Record<string, ZodTypeAny>;
-  errors: Record<string, string[] | undefined> | {};
-}
+/**
+ * Type alias for form errors. It represents a record where each key is a property of the validated data
+ * and each value is an array of error messages.
+ *
+ * @template T - A Zod schema representing the shape of the validated data.
+ * @typedef {Record<keyof T, string[]>} FormErrors
+ */
+type FormErrors<T extends ZodType<any>> = Record<keyof T, string[]>;
 
-export function formValidation<T extends Record<string, ZodTypeAny>>(
-  schema: z.ZodObject<T>,
+/**
+ * Type representing the result of form validation. It's a union type that represents either a successful validation
+ * or a failed validation.
+ *
+ * In case of successful validation:
+ * - `isValid` is `true`
+ * - `parsedData` contains the validated data
+ * - `errors` is an empty object
+ *
+ * In case of failed validation:
+ * - `isValid` is `false`
+ * - `errors` contains the validation errors
+ *
+ * @template T - A Zod schema representing the shape of the validated data.
+ * @typedef {Object} FormValidtionResult
+ * @property {boolean} isValid - Whether the validation was successful.
+ * @property {T} parsedData - The validated data. Only present if `isValid` is `true`.
+ * @property {Prettify<FormErrors<T>>} errors - The validation errors. Only present if `isValid` is `false`.
+ */
+export type FormValidtionResult<T extends ZodType<any>> =
+  | {
+      isValid: false;
+      errors: Prettify<FormErrors<T>>;
+    }
+  | {
+      isValid: true;
+      parsedData: T;
+      errors: Prettify<FormErrors<T>>;
+    };
+
+/**
+ * Validates form data against a Zod schema.
+ *
+ * @template T - A Zod schema representing the shape of the validated data.
+ * @param {T} schema - The Zod schema to validate against.
+ * @param {FormData} data - The form data to validate.
+ * @returns {FormValidtionResult<z.infer<T>>} - The result of the form validation.
+ */
+export function formValidation<T extends ZodType<any>>(
+  schema: T,
   data: FormData,
-): FormValidtionResult {
+): FormValidtionResult<z.infer<T>> {
   const res = schema.safeParse(data);
+
+  if (!res.success) {
+    return {
+      isValid: false,
+      errors: res.error?.flatten().fieldErrors as FormErrors<z.infer<T>>,
+    };
+  }
+
   return {
-    isValid: res.success,
-    parsedData: res.data,
-    errors: res.error?.flatten().fieldErrors ?? {},
+    isValid: true,
+    parsedData: res.data as z.infer<T>,
+    errors: {} as FormErrors<z.infer<T>>,
   };
 }

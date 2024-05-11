@@ -6,11 +6,11 @@ import { notifications } from "@mantine/notifications";
 import { redirect } from "next/navigation";
 import { submit } from "./actions";
 
-import { type SignupErrors } from "./types";
+import { type SigninErrors } from "./types";
 
-const errors: SignupErrors = {};
+const errors: SigninErrors = {};
 
-export default function SignUpPage() {
+export default function SignInPage() {
   const [errs, setErrs] = useState(errors);
 
   const submitCb = async (formData: FormData) => {
@@ -21,8 +21,8 @@ export default function SignUpPage() {
       return;
     }
     notifications.show({
-      title: "Sign up successful",
-      message: "You have successfully signed up",
+      title: "Sign in successful",
+      message: "You have successfully signed in.",
       color: "green",
     });
     redirect("/");
@@ -33,8 +33,8 @@ export default function SignUpPage() {
   return (
     <div>
       <form onSubmit={handleSubmit}>
-        <Title order={1}>Sign Up</Title>
-        <Text>Sign up to access the best features</Text>
+        <Title order={1}>Sign In</Title>
+        <Text>Sign in to access the best features</Text>
         <TextInput
           label="Username"
           name="username"
@@ -46,12 +46,6 @@ export default function SignUpPage() {
           name="password"
           required
           error={errs.password?.join(" and ")}
-        />
-        <TextInput
-          label="Repeat Password"
-          name="repeatPassword"
-          required
-          error={errs.repeatPassword?.join(" and ")}
         />
 
         <Button type="submit" loading={isPending}>

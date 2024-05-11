@@ -1,7 +1,12 @@
-import "@mantine/core/styles.css";
 import { MantineProvider } from "@mantine/core";
+import { Notifications } from "@mantine/notifications";
 import { type ReactNode } from "react";
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  return <MantineProvider>{children}</MantineProvider>;
+  return (
+    <MantineProvider>
+      <Notifications />
+      {children}
+    </MantineProvider>
+  );
 };

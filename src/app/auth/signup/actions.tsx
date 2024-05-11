@@ -3,11 +3,11 @@ import { formValidation } from "@utils/formValidation";
 import { zfd } from "zod-form-data";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { hash } from "crypto";
 import { generateIdFromEntropySize } from "lucia";
-import { prismaClient, lucia } from "@/ext/configure";
+import { prismaClient } from "@/ext/configure";
 import { Prisma } from "@prisma/client";
+import { createSession } from "@utils/createSession";
 
 const validate = zfd
   .formData({
@@ -52,13 +52,7 @@ export const submit = async (values: FormData) => {
     return v.errors;
   }
 
-  const session = await lucia.createSession(userId, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
-  cookies().set(
-    sessionCookie.name,
-    sessionCookie.value,
-    sessionCookie.attributes,
-  );
+  await createSession(userId);
 
   revalidatePath("/");
 

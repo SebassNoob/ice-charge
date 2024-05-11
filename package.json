@@ -18,6 +18,7 @@
     "@mantine/form": "^7.9.1",
     "@mantine/notifications": "^7.9.1",
     "@prisma/client": "^5.13.0",
+    "arctic": "^1.8.1",
     "lucia": "^3.2.0",
     "next": "14.2.3",
     "react": "^18.3.1",

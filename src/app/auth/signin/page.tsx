@@ -7,11 +7,10 @@ import { redirect } from "next/navigation";
 import { submit } from "./actions";
 
 import { type SigninErrors } from "./types";
-
-const errors: SigninErrors = {};
+import { DiscordOAuth } from "@components/OAuth";
 
 export default function SignInPage() {
-  const [errs, setErrs] = useState(errors);
+  const [errs, setErrs] = useState<SigninErrors>({});
 
   const submitCb = async (formData: FormData) => {
     const errs = await submit(formData);
@@ -51,6 +50,7 @@ export default function SignInPage() {
           Sign Up
         </Button>
       </form>
+      <DiscordOAuth />
     </div>
   );
 }

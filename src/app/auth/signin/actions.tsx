@@ -3,9 +3,9 @@ import { formValidation } from "@utils/formValidation";
 import { zfd } from "zod-form-data";
 import { z } from "zod";
 import { revalidatePath } from "next/cache";
-import { cookies } from "next/headers";
 import { hash } from "crypto";
-import { prismaClient, lucia } from "@/ext/configure";
+import { prismaClient } from "@/ext/configure";
+import { createSession } from "@utils/createSession";
 
 const validate = zfd.formData({
   username: zfd.text(z.string().min(3)),
@@ -48,14 +48,7 @@ export const submit = async (values: FormData) => {
   if (hashed !== user.passwordAccount.passwordHash)
     return incorrectUserOrPassError;
 
-  const session = await lucia.createSession(user.id, {});
-  const sessionCookie = lucia.createSessionCookie(session.id);
-  cookies().set(
-    sessionCookie.name,
-    sessionCookie.value,
-    sessionCookie.attributes,
-  );
-
+  await createSession(user.id);
   revalidatePath("/");
 
   return v.errors;

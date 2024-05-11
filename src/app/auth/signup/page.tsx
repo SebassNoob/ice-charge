@@ -8,10 +8,8 @@ import { submit } from "./actions";
 
 import { type SignupErrors } from "./types";
 
-const errors: SignupErrors = {};
-
 export default function SignUpPage() {
-  const [errs, setErrs] = useState(errors);
+  const [errs, setErrs] = useState<SignupErrors>({});
 
   const submitCb = async (formData: FormData) => {
     const errs = await submit(formData);

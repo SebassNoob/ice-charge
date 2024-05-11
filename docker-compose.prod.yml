@@ -4,7 +4,9 @@ services:
     build:
       context: .
       dockerfile: prod.Dockerfile
-
+    env_file:
+      - ./src/ext/.env.production
+      - ./src/ext/.env.local
     networks:
       - app-network
     ports:

@@ -9,6 +9,9 @@ services:
       - ./public:/app/public
     networks:
       - app-network
+    env_file:
+      - ./src/ext/.env.development
+      - ./src/ext/.env.local
     ports:
       - "3000:3000"
 

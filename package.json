@@ -7,9 +7,9 @@
     "build": "NODE_ENV=production next build",
     "start": "NODE_ENV=production next start",
     "lint": "NODE_ENV=development next lint",
-    "prisma:generate": "dotenv -e src/ext/.env.development -- bunx prisma generate --schema=./src/db/schema.prisma",
-    "prisma:migrate": "dotenv -e src/ext/.env.development -- bunx prisma migrate dev --schema=./src/db/schema.prisma",
-    "prisma:reset": "dotenv -e src/ext/.env.development -- bunx prisma migrate reset --schema=./src/db/schema.prisma",
+    "prisma:generate": "bunx prisma generate --schema=./src/db/schema.prisma",
+    "prisma:migrate": "bunx prisma migrate dev --schema=./src/db/schema.prisma",
+    "prisma:reset": "bunx prisma migrate reset --schema=./src/db/schema.prisma",
     "prettier": "bunx prettier --write ."
   },
   "dependencies": {

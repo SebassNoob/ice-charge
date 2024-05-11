@@ -4,4 +4,4 @@ export interface SignupData {
   repeatPassword: string;
 }
 
-export type SignupErrors = Record<keyof SignupData, string[]>;
+export type SignupErrors = Partial<Record<keyof SignupData, string[]>>;

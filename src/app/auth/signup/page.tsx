@@ -1,22 +1,39 @@
 "use client";
 import { Title, Text, TextInput, Button } from "@mantine/core";
 import { AppSubmitButton } from "@components/AppSubmitButton";
-import { useFormState } from "react-dom";
+import { useState } from "react";
+import { useSubmit } from "@hooks/useSubmit";
+import { notifications } from "@mantine/notifications";
+import { redirect } from "next/navigation";
 import { submit } from "./actions";
+
 import { type SignupErrors } from "./types";
 
-const errors: SignupErrors = {
-  username: [],
-  password: [],
-  repeatPassword: [],
-};
+const errors: SignupErrors = {};
 
 export default function SignUpPage() {
-  const [errs, action] = useFormState(submit, errors);
+  const [errs, setErrs] = useState(errors);
+
+  const submitCb = async (formData: FormData) => {
+    const errs = await submit(formData);
+    console.log(errs);
+    if (!Object.values(errs).every((v) => v.length === 0)) {
+      setErrs(errs);
+      return;
+    }
+    notifications.show({
+      title: "Sign up successful",
+      message: "You have successfully signed up",
+      color: "green",
+    });
+    redirect("/");
+  };
+
+  const [isPending, handleSubmit] = useSubmit(submitCb);
 
   return (
     <div>
-      <form action={action}>
+      <form onSubmit={handleSubmit}>
         <Title order={1}>Sign Up</Title>
         <Text>Sign up to access the best features</Text>
         <TextInput
@@ -38,9 +55,10 @@ export default function SignUpPage() {
           error={errs.repeatPassword?.join(" and ")}
         />
 
-        <AppSubmitButton>Sign Up</AppSubmitButton>
+        <Button type="submit" loading={isPending}>
+          Sign Up
+        </Button>
       </form>
-      <Button onClick={() => console.log(errs)}>Log errors</Button>
     </div>
   );
 }

@@ -11,15 +11,12 @@ const errors: SignupErrors = {
   repeatPassword: [],
 };
 
-
 export default function SignUpPage() {
   const [errs, action] = useFormState(submit, errors);
 
   return (
     <div>
-      <form
-        action={action}
-      >
+      <form action={action}>
         <Title order={1}>Sign Up</Title>
         <Text>Sign up to access the best features</Text>
         <TextInput

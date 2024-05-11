@@ -22,7 +22,7 @@ const validate = zfd
 
 export const submit = async (_: SignupErrors, values: FormData) => {
   const v = formValidation(validate, values);
-  
+
   if (!v.isValid) {
     return v.errors;
   }
@@ -38,9 +38,6 @@ export const submit = async (_: SignupErrors, values: FormData) => {
     },
   });
 
-
-  
-  
   const session = await lucia.createSession(userId, {});
   const sessionCookie = lucia.createSessionCookie(session.id);
   cookies().set(
@@ -48,6 +45,6 @@ export const submit = async (_: SignupErrors, values: FormData) => {
     sessionCookie.value,
     sessionCookie.attributes,
   );
-  
+
   return v.errors;
 };

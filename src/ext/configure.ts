@@ -5,23 +5,19 @@ import { loadEnvFile } from "process";
 
 // load .env.local file and .env.production/.env.development file
 loadEnvFile(`${process.cwd()}/src/ext/.env.local`);
-loadEnvFile(`${process.cwd()}/src/ext/.env.${process.env.NODE_ENV}`)
-
-
+loadEnvFile(`${process.cwd()}/src/ext/.env.${process.env.NODE_ENV}`);
 
 const prismaClientSingleton = () => {
-  return new PrismaClient()
-}
+  return new PrismaClient();
+};
 
 declare const globalThis: {
   prismaGlobal: ReturnType<typeof prismaClientSingleton>;
 } & typeof global;
 
-const client = globalThis.prismaGlobal ?? prismaClientSingleton()
+const client = globalThis.prismaGlobal ?? prismaClientSingleton();
 
-
-if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = client
-
+if (process.env.NODE_ENV !== "production") globalThis.prismaGlobal = client;
 
 const adapter = new PrismaAdapter(client.session, client.user);
 const lucia = new Lucia(adapter, {
@@ -52,6 +48,5 @@ declare module "lucia" {
 interface DatabaseUserAttributes {
   username: string;
 }
-
 
 export { client as prismaClient, adapter, lucia };

@@ -15,7 +15,6 @@ export default function SignUpPage() {
 
   const submitCb = async (formData: FormData) => {
     const errs = await submit(formData);
-    console.log(errs);
     if (!Object.values(errs).every((v) => v.length === 0)) {
       setErrs(errs);
       return;

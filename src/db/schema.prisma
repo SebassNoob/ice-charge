@@ -14,10 +14,24 @@ datasource db {
 }
 
 model User {
-  id       String    @id
-  sessions Session[]
-  username String   @unique
+  id              String           @id
+  sessions        Session[]
+  username        String           @unique
+  passwordAccount PasswordAccount? @relation()
+  oAuthAccount    OAuthAccount?    @relation()
+}
+
+model PasswordAccount {
+  userId       String @id
   passwordHash String
+  user         User   @relation(references: [id], fields: [userId], onDelete: Cascade)
+}
+
+model OAuthAccount {
+  userId     String @id
+  provider   String
+  providerId String
+  user       User   @relation(references: [id], fields: [userId], onDelete: Cascade)
 }
 
 model Session {

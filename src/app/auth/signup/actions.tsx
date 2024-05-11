@@ -35,6 +35,11 @@ export const submit = async (values: FormData) => {
       data: {
         id: userId,
         username: v.parsedData.username,
+      },
+    });
+    await prismaClient.passwordAccount.create({
+      data: {
+        userId: userId,
         passwordHash: passwordHash,
       },
     });

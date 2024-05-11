@@ -19,24 +19,34 @@ export const submit = async (values: FormData) => {
     return v.errors;
   }
 
+  const incorrectUserOrPassError = {
+    username: ["Username or password is incorrect"],
+    password: ["Username or password is incorrect"],
+  };
+
   const user = await prismaClient.user.findUnique({
     where: {
       username: v.parsedData.username,
     },
+    include: {
+      passwordAccount: true,
+    },
   });
 
-  if (!user) {
-    v.errors["username"] = ["Username or password is incorrect"];
-    v.errors["password"] = ["Username or password is incorrect"];
-    return v.errors;
-  }
+  if (!user) return incorrectUserOrPassError;
 
   const hashed = await hash("sha256", v.parsedData.password);
-  if (hashed !== user.passwordHash) {
-    v.errors["username"] = ["Username or password is incorrect"];
-    v.errors["password"] = ["Username or password is incorrect"];
-    return v.errors;
-  }
+
+  // user did not sign up with password so recommend them to use oauth
+  if (!user.passwordAccount)
+    return {
+      password: [
+        "You did not sign up with this method. Try signing in your OAuth provider",
+      ],
+    };
+
+  if (hashed !== user.passwordAccount.passwordHash)
+    return incorrectUserOrPassError;
 
   const session = await lucia.createSession(user.id, {});
   const sessionCookie = lucia.createSessionCookie(session.id);

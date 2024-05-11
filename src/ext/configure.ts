@@ -49,4 +49,4 @@ interface DatabaseUserAttributes {
   username: string;
 }
 
-export { client as prismaClient, adapter, lucia };
+export { client as prismaClient, lucia };
